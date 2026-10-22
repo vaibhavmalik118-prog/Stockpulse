@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      FINNHUB_API_KEY: ${FINNHUB_API_KEY:-}
+      DATA_MODE: ${DATA_MODE:-auto}
+      COOLDOWN_SECONDS: ${COOLDOWN_SECONDS:-300}
+      DAILY_TRADE_LIMIT: ${DAILY_TRADE_LIMIT:-10}
+      MAX_CONSECUTIVE_LOSSES: ${MAX_CONSECUTIVE_LOSSES:-3}
+      STARTING_CASH: ${STARTING_CASH:-100000}
+      TICKERS: ${TICKERS:-AAPL,TSLA,MSFT,NVDA,AMZN,GOOGL}
+    volumes:
+      - stockpulse-data:/data
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  stockpulse-data:
